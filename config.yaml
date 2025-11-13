@@ -1,0 +1,17 @@
+logger:
+  level: info
+  format: json
+
+server:
+  host: "0.0.0.0"
+  port: "8080"
+  read_timeout: "10s"
+  write_timeout: "10s"
+  idle_timeout: "60s"
+  shutdown_timeout: "20s"
+
+postgres:
+  host: "postgres"
+  port: "5432"
+  ssl_mode: "disable"
+  
