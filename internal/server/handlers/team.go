@@ -14,6 +14,15 @@ func (api *ServiceAPI) AddTeam(ctx echo.Context) error {
 		return models.ErrInvalidInput
 	}
 
+	ids := make(map[string]struct{})
+	for _, member := range team.Members {
+		if _, ok := ids[member.ID]; ok {
+			return models.ErrRepiatableIDs
+		}
+
+		ids[member.ID] = struct{}{}
+	}
+
 	if err := api.DB.AddTeam(ctx.Request().Context(), &team); err != nil {
 		return fmt.Errorf("add team to DB: %w", err)
 	}

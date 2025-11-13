@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -38,6 +39,7 @@ func (r *reviewDB) AddTeam(ctx context.Context, team *models.Team) error {
 		if isUniqueViolation(err) {
 			return models.ErrTeamExists
 		}
+
 		return fmt.Errorf("insert team: %w", err)
 	}
 
@@ -61,44 +63,37 @@ func (r *reviewDB) AddTeam(ctx context.Context, team *models.Team) error {
 }
 
 func (r *reviewDB) GetTeam(ctx context.Context, name string) (*models.Team, error) {
-	const selecQuery = `
-		SELECT u.id, u.username, u.is_active
+	const query = `
+		SELECT
+		    COALESCE(
+				json_agg(
+					json_build_object(
+		        		'user_id', u.id,
+		        		'username', u.username,
+		        		'is_active', u.is_active
+		    		) 
+				) FILTER (WHERE u.id IS NOT NULL),
+				'[]'
+			) AS members
 		FROM teams t
 		LEFT JOIN users u ON t.id = u.team_id
 		WHERE t.name = $1
+		GROUP BY t.name
 	`
-	const checkExistsQuery = `
-		SELECT EXISTS(
-			SELECT 1 FROM teams
-			WHERE name = $1
-		)
-	`
-	tx, err := r.db.BeginTxx(ctx, &sql.TxOptions{Isolation: sql.LevelRepeatableRead})
+	var membersJSON string
+
+	err := r.db.QueryRowContext(ctx, query, name).Scan(&membersJSON)
 	if err != nil {
-		return nil, fmt.Errorf("start transaction: %w", err)
-	}
-	defer tx.Rollback()
-
-	var members []models.TeamMember
-	if err := tx.SelectContext(ctx, &members, selecQuery, name); err != nil {
-		return nil, fmt.Errorf("select members: %w", err)
-	}
-
-	if len(members) == 0 {
-		var exists bool
-		err := tx.GetContext(ctx, &exists, checkExistsQuery, name)
-
-		if err != nil {
-			return nil, fmt.Errorf("check team exists: %w", err)
-		}
-
-		if !exists {
+		if err == sql.ErrNoRows {
 			return nil, models.ErrNotFound
 		}
+
+		return nil, fmt.Errorf("select team: %w", err)
 	}
 
-	if err := tx.Commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
+	var members []models.TeamMember
+	if err := json.Unmarshal([]byte(membersJSON), &members); err != nil {
+		return nil, fmt.Errorf("unmarshal members: %w", err)
 	}
 
 	return &models.Team{

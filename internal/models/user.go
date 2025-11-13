@@ -3,7 +3,7 @@ package models
 import "github.com/google/uuid"
 
 type TeamMember struct {
-	UserID   string `json:"user_id"   db:"id"`
+	ID       string `json:"user_id"   db:"id"`
 	Username string `json:"username"  db:"username"`
 	IsActive bool   `json:"is_active" db:"is_active"`
 }

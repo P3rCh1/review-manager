@@ -1,16 +1,25 @@
 package handlers
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/p3rch1/review-manager/internal/models"
 )
 
-func (api *ServiceAPI) CreatePullRequest(c echo.Context) error {
-	var req models.PullRequestCreateRequest
-	if err := c.Bind(&req); err != nil {
+func (api *ServiceAPI) CreatePullRequest(ctx echo.Context) error {
+	var request models.PRCreateRequest
+	if err := ctx.Bind(&request); err != nil {
 		return models.ErrInvalidInput
 	}
-	return nil
+
+	pr, err := api.DB.PRCreate(ctx.Request().Context(), &request)
+	if err != nil {
+		return fmt.Errorf("create pr: %w", err)
+	}
+
+	return ctx.JSON(http.StatusCreated, pr)
 }
 
 func (api *ServiceAPI) MergePullRequest(c echo.Context) error {

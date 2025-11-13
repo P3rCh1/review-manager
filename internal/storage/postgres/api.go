@@ -15,6 +15,7 @@ type ReviewAPI interface {
 	AddTeam(ctx context.Context, team *models.Team) error
 	GetTeam(ctx context.Context, name string) (*models.Team, error)
 	SetIsActive(ctx context.Context, request *models.SetActiveRequest) (*models.User, error)
+	PRCreate(ctx context.Context, request *models.PRCreateRequest) (*models.PR, error)
 	io.Closer
 }
 
