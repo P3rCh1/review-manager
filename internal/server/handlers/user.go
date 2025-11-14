@@ -9,12 +9,12 @@ import (
 )
 
 func (api *ServiceAPI) SetUserIsActive(ctx echo.Context) error {
-	var request models.SetActiveRequest
-	if err := ctx.Bind(&request); err != nil {
+	var req models.SetActiveRequest
+	if err := ctx.Bind(&req); err != nil {
 		return models.ErrInvalidInput
 	}
 
-	user, err := api.DB.SetIsActive(ctx.Request().Context(), &request)
+	user, err := api.DB.SetIsActive(ctx.Request().Context(), &req)
 	if err != nil {
 		return fmt.Errorf("set is_active DB: %w", err)
 	}

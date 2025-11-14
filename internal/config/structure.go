@@ -6,6 +6,7 @@ type Config struct {
 	Logger   Logger   `yaml:"logger"`
 	HTTP     HTTP     `yaml:"server"`
 	Postgres Postgres `yaml:"postgres"`
+	Business Business `yaml:"business"`
 }
 
 type Logger struct {
@@ -29,4 +30,8 @@ type Postgres struct {
 	Password string `                env:"POSTGRES_PASSWORD" validate:"required"`
 	DB       string `                env:"POSTGRES_DB"       validate:"required"`
 	SSLMode  string `yaml:"ssl_mode" env:"POSTGRES_SSL_MODE" env-default:"disable"`
+}
+
+type Business struct {
+	ReviewersCount int `yaml:"reviewers_count" env:"REVIEWERS_COUNT" env-default:"2" validate:"required,gt=0"`
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/p3rch1/review-manager/internal/models"
 )
 
-func (r *reviewDB) SetIsActive(ctx context.Context, request *models.SetActiveRequest) (*models.User, error) {
+func (r *reviewDB) SetIsActive(ctx context.Context, req *models.SetActiveRequest) (*models.User, error) {
 	const query = `
     	UPDATE users u
     	SET is_active = $1
@@ -19,7 +19,7 @@ func (r *reviewDB) SetIsActive(ctx context.Context, request *models.SetActiveReq
 	`
 
 	var user models.User
-	err := r.db.GetContext(ctx, &user, query, request.IsActive, request.UserID)
+	err := r.db.GetContext(ctx, &user, query, req.IsActive, req.UserID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, models.ErrNotFound

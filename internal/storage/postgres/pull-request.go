@@ -10,26 +10,24 @@ import (
 	"github.com/p3rch1/review-manager/internal/models"
 )
 
-const REVIEWERS_COUNT = 2
-
-func (r *reviewDB) PRCreate(ctx context.Context, request *models.PRCreateRequest) (*models.PR, error) {
+func (r *reviewDB) PRCreate(ctx context.Context, req *models.PRCreateRequest, reviewersCount int) (*models.PR, error) {
 	const query = `
 		WITH inserted_pr AS (
 			INSERT INTO pull_requests (id, title, author_id)
-			SELECT $1, $2, u.id
-			FROM users u
-			WHERE u.id = $3
+				SELECT $1, $2, u.id
+				FROM users u
+				WHERE u.id = $3
 			RETURNING id, author_id, title, status, created_at
 		),
 
 		assigned_reviewers AS (
 			INSERT INTO pr_reviewers (pr_id, user_id)
-			SELECT ip.id, u.id
-			FROM inserted_pr ip
-			JOIN users u ON u.team_id = (SELECT team_id FROM users WHERE id = $3)
-			WHERE u.id <> $3 AND u.is_active = TRUE
-			ORDER BY random()
-			LIMIT $4
+				SELECT ip.id, u.id
+				FROM inserted_pr ip
+				JOIN users u ON u.team_id = (SELECT team_id FROM users WHERE id = $3)
+				WHERE u.id <> $3 AND u.is_active = TRUE
+				ORDER BY random()
+				LIMIT $4
 			RETURNING user_id
 		)
 
@@ -50,7 +48,7 @@ func (r *reviewDB) PRCreate(ctx context.Context, request *models.PRCreateRequest
 	var pr models.PR
 	var reviewers pq.StringArray
 
-	row := r.db.QueryRowContext(ctx, query, request.ID, request.Title, request.AuthorID, REVIEWERS_COUNT)
+	row := r.db.QueryRowContext(ctx, query, req.ID, req.Title, req.AuthorID, reviewersCount)
 	err := row.Scan(
 		&pr.ID,
 		&pr.AuthorID,
@@ -63,9 +61,11 @@ func (r *reviewDB) PRCreate(ctx context.Context, request *models.PRCreateRequest
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, models.ErrNotFound
 		}
+
 		if isUniqueViolation(err) {
 			return nil, models.ErrPRExists
 		}
+
 		return nil, fmt.Errorf("create pr: %w", err)
 	}
 

@@ -9,12 +9,12 @@ import (
 )
 
 func (api *ServiceAPI) CreatePullRequest(ctx echo.Context) error {
-	var request models.PRCreateRequest
-	if err := ctx.Bind(&request); err != nil {
+	var req models.PRCreateRequest
+	if err := ctx.Bind(&req); err != nil {
 		return models.ErrInvalidInput
 	}
 
-	pr, err := api.DB.PRCreate(ctx.Request().Context(), &request)
+	pr, err := api.DB.PRCreate(ctx.Request().Context(), &req, api.Config.Business.ReviewersCount)
 	if err != nil {
 		return fmt.Errorf("create pr: %w", err)
 	}

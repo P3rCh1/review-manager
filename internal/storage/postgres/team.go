@@ -35,7 +35,8 @@ func (r *reviewDB) AddTeam(ctx context.Context, team *models.Team) error {
 	defer tx.Rollback()
 
 	var teamID uuid.UUID
-	if err := tx.QueryRowContext(ctx, insertTeamQuery, team.TeamName).Scan(&teamID); err != nil {
+	err = tx.QueryRowContext(ctx, insertTeamQuery, team.TeamName).Scan(&teamID)
+	if err != nil {
 		if isUniqueViolation(err) {
 			return models.ErrTeamExists
 		}
