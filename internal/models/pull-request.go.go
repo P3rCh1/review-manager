@@ -12,9 +12,9 @@ type PRShort struct {
 }
 type PR struct {
 	PRShort
-	AssignedReviewers []string  `json:"assigned_reviewers"`
-	CreatedAt         time.Time `json:"createdAt" db:"title"`
-	MergedAt          time.Time `json:"mergedAt,omitzero" db:"title"`
+	AssignedReviewers []string  `json:"assigned_reviewers" db:"assigned_reviewers"`
+	CreatedAt         time.Time `json:"createdAt"          db:"created_at"`
+	MergedAt          time.Time `json:"mergedAt,omitzero"  db:"merged_at"`
 }
 
 type PRCreateRequest struct {
@@ -23,20 +23,18 @@ type PRCreateRequest struct {
 	AuthorID string `json:"author_id"         db:"author_id"`
 }
 
+type MergeRequest struct {
+	ID string `json:"pull_request_id" db:"id"`
+}
+
 type ReassignRequest struct {
-	PullRequestID string `json:"pull_request_id"`
+	PRID          string `json:"pull_request_id"`
 	OldReviewerID string `json:"old_reviewer_id"`
 }
 
-type PullRequestResponse struct {
-	PullRequestID     string    `json:"pull_request_id"`
-	PullRequestName   string    `json:"pull_request_name"`
-	AuthorID          string    `json:"author_id"`
-	Status            Status    `json:"status"`
-	AssignedReviewers []string  `json:"assigned_reviewers"`
-	NeedMoreReviewers bool      `json:"need_more_reviewers"`
-	CreatedAt         time.Time `json:"createdAt"`
-	MergedAt          time.Time `json:"mergedAt,omitempty"`
+type ReassignResponce struct {
+	PR         PR     `json:"pr"`
+	ReplacedBy string `json:"replaced_by"`
 }
 
 type UserReviewResponse struct {

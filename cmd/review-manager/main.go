@@ -97,9 +97,9 @@ func SetupServer(api *handlers.ServiceAPI) *echo.Echo {
 	router.GET("/team/get", api.GetTeam)
 	router.POST("/users/setIsActive", api.SetUserIsActive)
 	router.GET("/users/getReview", api.GetUserReviewPRs)
-	router.POST("/pullRequest/create", api.CreatePullRequest)
-	router.POST("/pullRequest/merge", api.MergePullRequest)
-	router.POST("/pullRequest/reassign", api.ReassignPullRequest)
+	router.POST("/pullRequest/create", api.CreatePR)
+	router.POST("/pullRequest/merge", api.MergePR)
+	router.POST("/pullRequest/reassign", api.ReassignPR)
 
 	router.HTTPErrorHandler = handlers.ErrorHandler
 

@@ -20,7 +20,7 @@ CREATE TABLE pull_requests (
     
     author_id TEXT NOT NULL REFERENCES users(id),
     
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     merged_at TIMESTAMPTZ NULL
 );
 

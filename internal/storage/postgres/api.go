@@ -15,7 +15,9 @@ type ReviewAPI interface {
 	AddTeam(ctx context.Context, team *models.Team) error
 	GetTeam(ctx context.Context, name string) (*models.Team, error)
 	SetIsActive(ctx context.Context, req *models.SetActiveRequest) (*models.User, error)
-	PRCreate(ctx context.Context, req *models.PRCreateRequest, reviewersCount int) (*models.PR, error)
+	CreatePR(ctx context.Context, req *models.PRCreateRequest, reviewersCount int) (*models.PR, error)
+	Merge(ctx context.Context, req *models.MergeRequest) (*models.PR, error)
+	ReassignPR(ctx context.Context, req *models.ReassignRequest) (*models.ReassignResponce, error)
 	io.Closer
 }
 

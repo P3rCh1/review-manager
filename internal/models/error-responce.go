@@ -22,7 +22,10 @@ var (
 	ErrNotAssigned = &ErrorResponce{http.StatusConflict, "NOT_ASSIGNED", "reviewer is not assigned to this PR"}
 	ErrNoCandidate = &ErrorResponce{http.StatusConflict, "NO_CANDIDATE", "no active replacement candidate in team"}
 
-	ErrNotFound      = &ErrorResponce{http.StatusNotFound, "NOT_FOUND", "resource not found"}
+	ErrNotFound     = &ErrorResponce{http.StatusNotFound, "NOT_FOUND", "resource not found"}
+	ErrPRNotFound   = &ErrorResponce{http.StatusNotFound, "PR_NOT_FOUND", "pull request not found"}
+	ErrUserNotFound = &ErrorResponce{http.StatusNotFound, "USER_NOT_FOUND", "user not found"}
+
 	ErrInvalidInput  = &ErrorResponce{http.StatusBadRequest, "INVALID_INPUT", "invalid request body"}
 	ErrRepiatableIDs = &ErrorResponce{http.StatusBadRequest, "INVALID_INPUT", "repieatable IDs"}
 
