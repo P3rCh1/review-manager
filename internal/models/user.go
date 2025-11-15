@@ -22,3 +22,8 @@ type SetActiveRequest struct {
 	UserID   string `json:"user_id"`
 	IsActive bool   `json:"is_active"`
 }
+
+type GetReviewResponse struct {
+	UserID       string    `json:"user_id"`
+	PullRequests []PRShort `json:"pull_requests"`
+}

@@ -28,16 +28,11 @@ type MergeRequest struct {
 }
 
 type ReassignRequest struct {
-	PRID          string `json:"pull_request_id"`
-	OldReviewerID string `json:"old_reviewer_id"`
+	PRID      string `json:"pull_request_id"`
+	OldUserID string `json:"old_user_id"`
 }
 
 type ReassignResponce struct {
 	PR         PR     `json:"pr"`
 	ReplacedBy string `json:"replaced_by"`
-}
-
-type UserReviewResponse struct {
-	UserID       string    `json:"user_id"`
-	PullRequests []PRShort `json:"pull_requests"`
 }

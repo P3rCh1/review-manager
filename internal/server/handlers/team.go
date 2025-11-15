@@ -17,7 +17,7 @@ func (api *ServiceAPI) AddTeam(ctx echo.Context) error {
 	ids := make(map[string]struct{})
 	for _, member := range team.Members {
 		if _, ok := ids[member.ID]; ok {
-			return models.ErrRepiatableIDs
+			return models.ErrRepeatableIDs
 		}
 
 		ids[member.ID] = struct{}{}

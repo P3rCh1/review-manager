@@ -86,7 +86,7 @@ func (r *reviewDB) GetTeam(ctx context.Context, name string) (*models.Team, erro
 	err := r.db.QueryRowContext(ctx, query, name).Scan(&membersJSON)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, models.ErrNotFound
+			return nil, models.ErrTeamNotFound
 		}
 
 		return nil, fmt.Errorf("select team: %w", err)

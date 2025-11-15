@@ -60,7 +60,7 @@ func (r *reviewDB) CreatePR(ctx context.Context, req *models.PRCreateRequest, re
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, models.ErrNotFound
+			return nil, models.ErrUserNotFound
 		}
 
 		if isUniqueViolation(err) {
@@ -174,7 +174,7 @@ func (r *reviewDB) ReassignPR(ctx context.Context, req *models.ReassignRequest) 
 	var assigned pq.StringArray
 	var resp models.ReassignResponce
 
-	if err := tx.QueryRowContext(ctx, infoQuery, req.PRID, req.OldReviewerID).Scan(
+	if err := tx.QueryRowContext(ctx, infoQuery, req.PRID, req.OldUserID).Scan(
 		&resp.PR.ID,
 		&resp.PR.Title,
 		&resp.PR.AuthorID,
@@ -201,7 +201,7 @@ func (r *reviewDB) ReassignPR(ctx context.Context, req *models.ReassignRequest) 
 	resp.PR.AssignedReviewers = []string(assigned)
 	replacingIndex := -1
 	for i, r := range resp.PR.AssignedReviewers {
-		if r == req.OldReviewerID {
+		if r == req.OldUserID {
 			replacingIndex = i
 			break
 		}
@@ -210,7 +210,7 @@ func (r *reviewDB) ReassignPR(ctx context.Context, req *models.ReassignRequest) 
 		return nil, models.ErrNotAssigned
 	}
 
-	err = tx.QueryRowContext(ctx, selectNew, req.OldReviewerID, resp.PR.AuthorID, pq.Array(resp.PR.AssignedReviewers)).Scan(&resp.ReplacedBy)
+	err = tx.QueryRowContext(ctx, selectNew, req.OldUserID, resp.PR.AuthorID, pq.Array(resp.PR.AssignedReviewers)).Scan(&resp.ReplacedBy)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, models.ErrNoCandidate
@@ -219,7 +219,7 @@ func (r *reviewDB) ReassignPR(ctx context.Context, req *models.ReassignRequest) 
 		return nil, fmt.Errorf("select new reviewer: %w", err)
 	}
 
-	if _, err := tx.ExecContext(ctx, update, resp.ReplacedBy, req.PRID, req.OldReviewerID); err != nil {
+	if _, err := tx.ExecContext(ctx, update, resp.ReplacedBy, req.PRID, req.OldUserID); err != nil {
 		return nil, fmt.Errorf("update reviewer: %w", err)
 	}
 

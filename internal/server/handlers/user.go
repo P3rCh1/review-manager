@@ -8,7 +8,7 @@ import (
 	"github.com/p3rch1/review-manager/internal/models"
 )
 
-func (api *ServiceAPI) SetUserIsActive(ctx echo.Context) error {
+func (api *ServiceAPI) SetIsActive(ctx echo.Context) error {
 	var req models.SetActiveRequest
 	if err := ctx.Bind(&req); err != nil {
 		return models.ErrInvalidInput
@@ -22,11 +22,19 @@ func (api *ServiceAPI) SetUserIsActive(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, map[string]any{"user": user})
 }
 
-func (api *ServiceAPI) GetUserReviewPRs(c echo.Context) error {
-	userID := c.QueryParam("user_id")
-	if userID == "" {
+func (api *ServiceAPI) GetReviews(ctx echo.Context) error {
+	id := ctx.QueryParam("user_id")
+	if id == "" {
 		return models.ErrInvalidInput
 	}
 
-	return nil
+	reviews, err := api.DB.GetReviews(ctx.Request().Context(), id)
+	if err != nil {
+		return fmt.Errorf("get reviews DB: %w", err)
+	}
+
+	return ctx.JSON(http.StatusOK, &models.GetReviewResponse{
+		UserID:       id,
+		PullRequests: reviews,
+	})
 }
