@@ -14,11 +14,24 @@ example:
 ```
 - Возвращается createdAt несмотря на отсутствие в примерах (в спецификации компонента `PullRequest` поле присутствует)
 - Pull request может открыть в том числе неактивный пользователь (требования запретить не было)
-- Метод `/users/getReview` может вернуть ошибку `user not found` 
-- Добавлены ошибки `invalid input`, `internal server error`
 - При смене команды или выставлении флага `is_active` = `false` продолжает быть ревьюером там, где назначен.
 (Предполагаю, что при требовании к перераспределению необходимо было как-то вернуть новых ревьюеров)
 - При повторяющихся id пользователей в запросе на создание команды возвращается ошибка `repeatable ID`
+- Расширено количество возможных ошибок в методах (например, запрос `/users/getReview` может вернуть ошибку `USER_NOT_FOUND`)
+
+| Код ошибки | HTTP Status | Сообщение |
+|------------|-------------|-----------|
+| `TEAM_EXISTS` | 400 | team_name already exists |
+| `PR_EXISTS` | 409 | PR id already exists |
+| `PR_MERGED` | 409 | cannot reassign on merged PR |
+| `NOT_ASSIGNED` | 409 | reviewer is not assigned to this PR |
+| `NO_CANDIDATE` | 409 | no active replacement candidate in team |
+| `PR_NOT_FOUND` | 404 | pull request not found |
+| `TEAM_NOT_FOUND` | 404 | team not found |
+| `USER_NOT_FOUND` | 404 | user not found |
+| `INVALID_INPUT` | 400 | invalid request body |
+| `REPEATABLE_IDS` | 400 | repeatable IDs |
+| `INTERNAL_ERROR` | 500 | internal server error |
 
 ## Конфигурация
 - Выполняется с помощью yaml-файла и переменных окружения
@@ -40,6 +53,7 @@ example:
 |  | Пароль | — | `POSTGRES_PASSWORD` | — *(обязателен)* |
 |  | Имя базы данных | — | `POSTGRES_DB` | — *(обязателен)* |
 |  | Режим SSL | `ssl_mode` | `POSTGRES_SSL_MODE` | `disable` |
+| **Business** | Количество ревьюверов | `reviewers_count` | `REVIEWERS_COUNT` | `2` |
 
 
 ### Допустимые значения параметров логов  
