@@ -43,7 +43,15 @@ func main() {
 		)
 		os.Exit(1)
 	}
-	defer db.Close()
+
+	defer func() {
+		if err := db.Close(); err != nil {
+			logger.Error(
+				"database close error",
+				"error", err,
+			)
+		}
+	}()
 
 	api := handlers.NewServiceAPI(logger, cfg, db)
 
@@ -101,7 +109,7 @@ func SetupServer(api *handlers.ServiceAPI) *echo.Echo {
 	router.POST("/pullRequest/merge", api.MergePR)
 	router.POST("/pullRequest/reassign", api.ReassignPR)
 
-	router.HTTPErrorHandler = handlers.ErrorHandler
+	router.HTTPErrorHandler = handlers.ErrorHandler(api.Logger)
 
 	router.Server.Addr = api.Config.HTTP.Host + ":" + api.Config.HTTP.Port
 	router.Server.ReadTimeout = api.Config.HTTP.ReadTimeout

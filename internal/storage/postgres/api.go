@@ -38,7 +38,7 @@ func NewReviewAPI(cfg *config.Postgres) (ReviewAPI, error) {
 	}
 
 	if err := db.Ping(); err != nil {
-		db.Close()
+		db.Close() //nolint:errcheck
 		return nil, fmt.Errorf("ping postgres fail: %w", err)
 	}
 

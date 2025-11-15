@@ -1,0 +1,26 @@
+version: "2"
+  
+output:
+  formats:
+    text:
+      path: stdout
+      print-linter-name: true
+      print-issued-lines: true
+      colors: true
+
+linters:
+  default: none
+  enable:
+    - govet
+    - staticcheck
+    - unparam
+    - errcheck
+    - prealloc
+    - unconvert
+
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports

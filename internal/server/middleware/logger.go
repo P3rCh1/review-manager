@@ -49,5 +49,4 @@ func Logger(logger *slog.Logger) echo.MiddlewareFunc {
 			return err
 		}
 	}
-
 }

@@ -30,7 +30,6 @@ func (r *reviewDB) SetIsActive(ctx context.Context, req *models.SetActiveRequest
 	}
 
 	return &user, nil
-
 }
 
 func (r *reviewDB) GetReviews(ctx context.Context, id string) ([]models.PRShort, error) {
@@ -63,7 +62,6 @@ func (r *reviewDB) GetReviews(ctx context.Context, id string) ([]models.PRShort,
 
 	if !queryRes.UserExists {
 		return nil, models.ErrUserNotFound
-
 	}
 
 	res := []models.PRShort{}

@@ -56,11 +56,21 @@ func main() {
 
 		migrator, err := migrate.New("file://migrations", info)
 		if err != nil {
-			logger.Error("create migrate instance fail: %s", "error", err)
+			logger.Error("create migrate instance fail", "error", err)
 			os.Exit(1)
 		}
 
-		defer migrator.Close()
+		defer func() {
+			sourceErr, dbErr := migrator.Close()
+			if sourceErr != nil {
+				logger.Error("migrator close source error", "error", sourceErr)
+			}
+
+			if dbErr != nil {
+				logger.Error("migrator close database error", "error", dbErr)
+			}
+		}()
+
 		exec(logger, migrator)
 	}
 }

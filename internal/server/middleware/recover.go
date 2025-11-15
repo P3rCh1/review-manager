@@ -1,34 +1,35 @@
 package middleware
 
 import (
+	"log/slog"
 	"net/http"
 	"runtime/debug"
 
-	"log/slog"
-
 	"github.com/labstack/echo/v4"
+	"github.com/p3rch1/review-manager/internal/models"
 )
 
 func Recover(logger *slog.Logger) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(ctx echo.Context) error {
 			defer func() {
 				if r := recover(); r != nil {
 					logger.Error(
 						"panic recovered",
 						"error", r,
-						"path", c.Path(),
-						"method", c.Request().Method,
+						"path", ctx.Path(),
+						"method", ctx.Request().Method,
 						"stack", string(debug.Stack()),
 					)
 
-					c.JSON(http.StatusInternalServerError, map[string]any{
-						"message": "internal server error",
-					})
+					err := ctx.JSON(http.StatusInternalServerError, models.ErrInternal)
+					if err != nil {
+						logger.Error("responce with error fail", "error", err)
+					}
 				}
 			}()
 
-			return next(c)
+			return next(ctx)
 		}
 	}
 }

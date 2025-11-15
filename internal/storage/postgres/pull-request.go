@@ -170,7 +170,7 @@ func (r *reviewDB) ReassignPR(ctx context.Context, req *models.ReassignRequest) 
 		return nil, err
 	}
 
-	defer tx.Rollback()
+	defer tx.Rollback() //nolint:errcheck
 
 	var userExists bool
 	var assigned pq.StringArray

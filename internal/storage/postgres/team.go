@@ -33,7 +33,7 @@ func (r *reviewDB) AddTeam(ctx context.Context, team *models.Team) error {
 		return fmt.Errorf("start transaction: %w", err)
 	}
 
-	defer tx.Rollback()
+	defer tx.Rollback() //nolint:errcheck
 
 	var teamID uuid.UUID
 	if err = tx.QueryRowContext(ctx, insertTeamQuery, team.TeamName).Scan(&teamID); err != nil {
