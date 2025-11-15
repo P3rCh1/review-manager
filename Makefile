@@ -1,5 +1,3 @@
-COMPOSE_FILE := docker compose.yaml
-
 .PHONY: migrate-up migrate-down migrate-version migrate-force down up
 
 default: up
