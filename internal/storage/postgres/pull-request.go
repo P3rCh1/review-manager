@@ -120,6 +120,7 @@ func (r *reviewDB) Merge(ctx context.Context, req *models.MergeRequest) (*models
 	}
 
 	pr.AssignedReviewers = []string(assigned)
+
 	return &pr, nil
 }
 
@@ -168,6 +169,7 @@ func (r *reviewDB) ReassignPR(ctx context.Context, req *models.ReassignRequest) 
 	if err != nil {
 		return nil, err
 	}
+
 	defer tx.Rollback()
 
 	var userExists bool
@@ -200,12 +202,14 @@ func (r *reviewDB) ReassignPR(ctx context.Context, req *models.ReassignRequest) 
 
 	resp.PR.AssignedReviewers = []string(assigned)
 	replacingIndex := -1
+
 	for i, r := range resp.PR.AssignedReviewers {
 		if r == req.OldUserID {
 			replacingIndex = i
 			break
 		}
 	}
+
 	if replacingIndex == -1 {
 		return nil, models.ErrNotAssigned
 	}
@@ -228,5 +232,6 @@ func (r *reviewDB) ReassignPR(ctx context.Context, req *models.ReassignRequest) 
 	}
 
 	resp.PR.AssignedReviewers[replacingIndex] = resp.ReplacedBy
+
 	return &resp, nil
 }

@@ -32,11 +32,11 @@ func (r *reviewDB) AddTeam(ctx context.Context, team *models.Team) error {
 	if err != nil {
 		return fmt.Errorf("start transaction: %w", err)
 	}
+
 	defer tx.Rollback()
 
 	var teamID uuid.UUID
-	err = tx.QueryRowContext(ctx, insertTeamQuery, team.TeamName).Scan(&teamID)
-	if err != nil {
+	if err = tx.QueryRowContext(ctx, insertTeamQuery, team.TeamName).Scan(&teamID); err != nil {
 		if isUniqueViolation(err) {
 			return models.ErrTeamExists
 		}
@@ -69,9 +69,9 @@ func (r *reviewDB) GetTeam(ctx context.Context, name string) (*models.Team, erro
 		    COALESCE(
 				json_agg(
 					json_build_object(
-		        		'user_id', u.id,
-		        		'username', u.username,
-		        		'is_active', u.is_active
+		        		'user_id',		u.id,
+		        		'username', 	u.username,
+		        		'is_active', 	u.is_active
 		    		) 
 				) FILTER (WHERE u.id IS NOT NULL),
 				'[]'

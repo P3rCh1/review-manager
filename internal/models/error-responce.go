@@ -26,7 +26,7 @@ var (
 	ErrTeamNotFound = &ErrorResponce{http.StatusNotFound, "TEAM_NOT_FOUND", "team not found"}
 	ErrUserNotFound = &ErrorResponce{http.StatusNotFound, "USER_NOT_FOUND", "user not found"}
 
-	ErrInvalidInput  = &ErrorResponce{http.StatusBadRequest, "INVALID_INPUT", "invalid request body"}
+	ErrInvalidInput  = &ErrorResponce{http.StatusBadRequest, "INVALID_INPUT", "invalid input"}
 	ErrRepeatableIDs = &ErrorResponce{http.StatusBadRequest, "REPEATABLE_IDS", "repeatable IDs"}
 
 	ErrInternal = &ErrorResponce{http.StatusInternalServerError, "INTERNAL_ERROR", "internal server error"}

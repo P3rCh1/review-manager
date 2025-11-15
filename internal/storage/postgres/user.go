@@ -57,8 +57,7 @@ func (r *reviewDB) GetReviews(ctx context.Context, id string) ([]models.PRShort,
 		ReviewsJSON string `db:"reviews"`
 		UserExists  bool   `db:"user_exists"`
 	}{}
-	err := r.db.GetContext(ctx, &queryRes, query, id)
-	if err != nil {
+	if err := r.db.GetContext(ctx, &queryRes, query, id); err != nil {
 		return nil, fmt.Errorf("select reviews: %w", err)
 	}
 

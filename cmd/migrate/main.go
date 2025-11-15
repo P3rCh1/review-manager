@@ -102,7 +102,7 @@ func version(logger *slog.Logger, migrator *migrate.Migrate) {
 		os.Exit(1)
 	}
 
-	slog.Info("migration version", "version", version, "dirty", dirty)
+	logger.Info("migration version", "version", version, "dirty", dirty)
 }
 
 func force(logger *slog.Logger, migrator *migrate.Migrate) {
@@ -113,7 +113,7 @@ func force(logger *slog.Logger, migrator *migrate.Migrate) {
 
 	version, err := strconv.Atoi(os.Args[2])
 	if err != nil || version <= 0 {
-		logger.Error("invalid version")
+		logger.Error("invalid version", "version", os.Args[2])
 		os.Exit(1)
 	}
 
