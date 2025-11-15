@@ -19,6 +19,9 @@ type ReviewAPI interface {
 	Merge(ctx context.Context, req *models.MergeRequest) (*models.PR, error)
 	ReassignPR(ctx context.Context, req *models.ReassignRequest) (*models.ReassignResponce, error)
 	GetReviews(ctx context.Context, id string) ([]models.PRShort, error)
+	ServiceStats() (*models.ServiceStats, error)
+	UserStats() (*models.UserStats, error)
+	PRStats() (*models.PRStats, error)
 	io.Closer
 }
 

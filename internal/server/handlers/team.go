@@ -9,8 +9,6 @@ import (
 )
 
 func (api *ServiceAPI) AddTeam(ctx echo.Context) error {
-	var p *int
-	_ = *p
 	var team models.Team
 	if err := ctx.Bind(&team); err != nil || team.TeamName == "" {
 		return models.ErrInvalidInput
