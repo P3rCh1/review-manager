@@ -1,0 +1,23 @@
+  █ TOTAL RESULTS 
+
+    checks_total.......: 2759    181.386692/s
+    checks_succeeded...: 100.00% 2759 out of 2759
+    checks_failed......: 0.00%   0 out of 2759
+
+    ✓ prepare test: u1 team should include active users
+
+    HTTP
+    http_req_duration..............: avg=35.4ms  min=2.64ms med=16.48ms  max=217.74ms p(90)=109.36ms p(95)=130.77ms
+      { expected_response:true }...: avg=35.4ms  min=2.64ms med=16.48ms  max=217.74ms p(90)=109.36ms p(95)=130.77ms
+    http_req_failed................: 0.00%  0 out of 5518
+    http_reqs......................: 5518   362.773383/s
+
+    EXECUTION
+    iteration_duration.............: avg=273.7ms min=207ms  med=246.79ms max=548.74ms p(90)=369.97ms p(95)=415.76ms
+    iterations.....................: 2759   181.386692/s
+    vus............................: 50     min=50        max=50
+    vus_max........................: 50     min=50        max=50
+
+    NETWORK
+    data_received..................: 2.0 MB 128 kB/s
+    data_sent......................: 1.4 MB 94 kB/s
