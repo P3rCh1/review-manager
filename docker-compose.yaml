@@ -4,9 +4,9 @@ services:
     ports: 
       - 8080:8080
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-review-manager}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-you_need_to_change_this}
+      POSTGRES_DB: ${POSTGRES_DB:-review-manager}
     restart: unless-stopped
     depends_on:
       postgres_migrate:
@@ -19,9 +19,9 @@ services:
       context: .
       dockerfile: Dockerfile.migrator
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-review-manager}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-you_need_to_change_this}
+      POSTGRES_DB: ${POSTGRES_DB:-review-manager}
     entrypoint: ["./migrate"] 
     command: ["up", "-c", "config.yaml"]
     depends_on:
@@ -33,13 +33,13 @@ services:
   postgres:
     image: postgres:17
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-review-manager}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-you_need_to_change_this}
+      POSTGRES_DB: ${POSTGRES_DB:-review-manager}
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-review-manager} -d ${POSTGRES_DB:-review-manager}"]
       interval: 5s
       timeout: 5s
       retries: 5
